@@ -12,5 +12,6 @@
 *.out
 
 rpm-mirrors
+build/
 repos/
 *.sw*

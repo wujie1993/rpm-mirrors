@@ -14,7 +14,11 @@ build_bin: pre_build
 	go build -v -o ./build/$(name)
 
 build_docker: build_bin
-	cd ./build/; docker build -t $(name):$(version)-$(release) .
+	cp ./Dockerfile ./build/
+	docker build -t $(name):$(version)-$(release) ./build/
+
+build_chart:
+	helm package -d ../build/ ./chart/$(name)
 
 push_docker: build_docker
 	docker tag $(name):$(version)-$(release) $(docker_registry)/gzsunrun/$(name):$(version)-$(release)
