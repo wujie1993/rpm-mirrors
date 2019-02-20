@@ -1,6 +1,6 @@
 name=rpm-mirrors
 version=0.1.0
-release=1
+release=2
 docker_registry=192.168.1.100:5000
 
 .PHONY: build_bin build_docker
@@ -18,6 +18,7 @@ build_docker: build_bin
 	docker build -t $(name):$(version)-$(release) ./build/
 
 build_chart:
+	sed -i 's/^image: gzsunrun\/$(name).*/image: gzsunrun\/$(name):$(version)-$(release)/' ./chart/$(name)/values.yaml
 	helm package -d ./build/ ./chart/$(name)
 
 push_docker: build_docker
