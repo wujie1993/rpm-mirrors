@@ -30,19 +30,21 @@ build_image: build_bin
 	cp ./Dockerfile ./build/
 	docker build -t $(name):$(version)-$(release) ./build/
 
-build_chart:
-	sed -i 's/^image: gzsunrun\/$(name).*/image: gzsunrun\/$(name):$(version)-$(release)/' ./chart/$(name)/values.yaml
-	helm package -d ./build/ ./chart/$(name)
-
 push_image: build_image
 	docker tag $(name):$(version)-$(release) $(docker_registry)/gzsunrun/$(name):$(version)-$(release)
 	docker push $(docker_registry)/gzsunrun/$(name):$(version)-$(release)
 
+build_chart:
+	sed -i 's/^image: gzsunrun\/$(name).*/image: gzsunrun\/$(name):$(version)-$(release)/' ./chart/$(name)/values.yaml
+	cp -f ./conf/$(name).conf ./chart/$(name)/files/
+	helm package -d ./build/ ./chart/$(name)
+
 push_chart: build_chart
 	helm push -u $(harbor_username) -p $(harbor_password)  ./build/$(name)-$(version).tgz $(harbor_repo)
 
-helm_install:
-	helm install --name $(release_name) --namespace $(namespace) ./chart/$(name)/
+helm_install: build_chart
+	helm install --name $(release_name) --namespace $(namespace) ./build/$(name)-$(version).tgz
 
-helm_upgrade:
-	helm upgrade $(release_name) ./chart/$(name)/
+helm_upgrade: build_chart
+	helm upgrade $(release_name) ./build/$(name)-$(version).tgz
+
