@@ -36,7 +36,6 @@ push_image: build_image
 
 build_chart:
 	sed -i 's/^image: gzsunrun\/$(name).*/image: gzsunrun\/$(name):$(version)-$(release)/' ./chart/$(name)/values.yaml
-	cp -f ./conf/$(name).conf ./chart/$(name)/files/
 	helm package -d ./build/ ./chart/$(name)
 
 push_chart: build_chart
