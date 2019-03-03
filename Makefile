@@ -1,3 +1,4 @@
+org=gzsunrun
 name=rpm-mirrors
 version=0.1.0
 release=2
@@ -10,11 +11,12 @@ harbor_password=Q1w2e3r4t5
 
 # docker
 docker_registry=$(harbor_registry)
+docker_registry_username=$(harbor_username)
+docker_registry_password=$(harbor_password)
 
 # helm
 release_name=$(name)
 namespace=bu
-
 
 .PHONY: build_bin build_docker
 
@@ -34,11 +36,12 @@ build_image: build_bin
 	docker build -t $(name):$(version)-$(release) ./build/
 
 push_image: build_image
-	docker tag $(name):$(version)-$(release) $(docker_registry)/gzsunrun/$(name):$(version)-$(release)
-	docker push $(docker_registry)/gzsunrun/$(name):$(version)-$(release)
+	docker login -u $(docker_registry_username) -p $(docker_registry_password) $(docker_registry)
+	docker tag $(name):$(version)-$(release) $(docker_registry)/$(org)/$(name):$(version)-$(release)
+	docker push $(docker_registry)/$(org)/$(name):$(version)-$(release)
 
 build_chart:
-	sed -i 's/^image: gzsunrun\/$(name).*/image: gzsunrun\/$(name):$(version)-$(release)/' ./chart/$(name)/values.yaml
+	sed -i 's/^image: $(org)\/$(name).*/image: $(org)\/$(name):$(version)-$(release)/' ./chart/$(name)/values.yaml
 	helm package -d ./build/ ./chart/$(name)
 
 push_chart: build_chart
