@@ -26,6 +26,9 @@ pre_build:
 build_bin: pre_build
 	go build -v -o ./build/$(name)
 
+install: build_bin
+	cp -f ./build/$(name) /usr/local/bin/$(name) 
+
 build_image: build_bin
 	cp ./Dockerfile ./build/
 	docker build -t $(name):$(version)-$(release) ./build/
