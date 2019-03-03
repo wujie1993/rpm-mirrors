@@ -35,11 +35,12 @@ install: build_bin
 
 build_image: build_bin
 	cp ./Dockerfile ./build/
-	docker build -t $(name):$(version)-$(release) ./build/
+	cp ./conf/$(name).conf ./build/
+	docker build -t $(name):latest ./build/
 
 push_image: build_image
 	docker login -u $(docker_registry_username) -p $(docker_registry_password) $(docker_registry)
-	docker tag $(name):$(version)-$(release) $(docker_registry)/$(org)/$(name):$(version)-$(release)
+	docker tag $(name):latest $(docker_registry)/$(org)/$(name):$(version)-$(release)
 	docker push $(docker_registry)/$(org)/$(name):$(version)-$(release)
 
 build_chart:
