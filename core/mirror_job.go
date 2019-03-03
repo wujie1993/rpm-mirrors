@@ -19,7 +19,7 @@ func (job *MirrorJob) Start() error {
 	// Init storage
 	switch job.Storage.Type {
 	case StorageTypeLocal:
-		targetDir := path.Dir(job.Storage.LocalDir + job.Mirror.Target)
+		targetDir := path.Dir(job.Storage.LocalDir + "/" + job.Mirror.Target)
 		if err := os.MkdirAll(targetDir, 0774); err != nil {
 			return err
 		}
