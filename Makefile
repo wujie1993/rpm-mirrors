@@ -29,7 +29,9 @@ build_bin: pre_build
 	go build -v -o ./build/$(name)
 
 install: build_bin
-	cp -f ./build/$(name) /usr/local/bin/$(name) 
+	mkdir -p /etc/$(name)/
+	cp ./conf/$(name).conf /etc/$(name)/$(name).conf.example
+	cp ./build/$(name) /usr/local/bin/$(name) 
 
 build_image: build_bin
 	cp ./Dockerfile ./build/

@@ -6,7 +6,7 @@ import (
 )
 
 const (
-	DefaultConfPath = "conf/rpm-mirrors.conf"
+	DefaultConfPath = "/etc/rpm-mirrors/rpm-mirrors.conf"
 
 	StorageTypeLocal = "local"
 	StorageTypeS3    = "s3"
