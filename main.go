@@ -11,7 +11,7 @@ import (
 	"github.com/wujie1993/rpm-mirrors/core"
 )
 
-func SyncMirrors() error {
+func syncMirrors() error {
 	conf := core.GetConf()
 	for {
 		// run mirror sync jobs
@@ -45,7 +45,7 @@ func main() {
 	log.Println("Load config")
 	log.Println(string(datas))
 
-	go SyncMirrors()
+	go syncMirrors()
 
 	interrupt := make(chan os.Signal, 1)
 	signal.Notify(interrupt, os.Interrupt, os.Kill, syscall.SIGTERM)
