@@ -32,6 +32,7 @@ func (job *MirrorJob) Start() error {
 		if err := cmd.Start(); err != nil {
 			return err
 		}
+		defer cmd.Wait()
 		reader := bufio.NewReader(stdout)
 		// Read and print standard output
 		for {
@@ -43,9 +44,6 @@ func (job *MirrorJob) Start() error {
 				return err
 			}
 			log.Println(string(datas))
-		}
-		if err := cmd.Wait(); err != nil {
-			return err
 		}
 		if err := cmd.Process.Kill(); err != nil {
 			return err
