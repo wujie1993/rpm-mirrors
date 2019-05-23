@@ -45,9 +45,6 @@ func (job *MirrorJob) Start() error {
 			}
 			log.Println(string(datas))
 		}
-		if err := cmd.Process.Kill(); err != nil {
-			return err
-		}
 	case StorageTypeS3:
 		return errors.New("storage type not implemented: " + job.Storage.Type)
 	default:
