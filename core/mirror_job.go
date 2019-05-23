@@ -50,6 +50,4 @@ func (job *MirrorJob) Start() error {
 	default:
 		return errors.New("storage type unsupported: " + job.Storage.Type)
 	}
-
-	return nil
 }
