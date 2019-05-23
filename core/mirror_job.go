@@ -10,11 +10,15 @@ import (
 	"path"
 )
 
+// MirrorJob defines the struct of a mirror sync job
 type MirrorJob struct {
-	Mirror  ConfMirror
+	// Mirror is the sync source
+	Mirror ConfMirror
+	// Storage is the destnation of file save to
 	Storage ConfStorage
 }
 
+// Start continue run the mirror job to sync mirror from remote and save to storage
 func (job *MirrorJob) Start() error {
 	// Init storage
 	switch job.Storage.Type {
