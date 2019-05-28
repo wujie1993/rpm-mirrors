@@ -18,7 +18,7 @@ docker_registry_password=$(harbor_password)
 release_name=$(name)
 namespace=bu
 
-.PHONY: build_bin build_docker
+.PHONY: bin docker chart
 
 all: bin
 
@@ -44,6 +44,7 @@ push_image: image
 	docker push $(docker_registry)/$(org)/$(name):$(version)-$(release)
 
 chart:
+	sed -i 's/^version: .*/version: $(version)/' ./chart/$(name)/Chart.yaml
 	sed -i 's/^image: $(org)\/$(name).*/image: $(org)\/$(name):$(version)-$(release)/' ./chart/$(name)/values.yaml
 	helm package -d ./build/ ./chart/$(name)
 
@@ -53,6 +54,6 @@ push_chart: chart
 helm_install: chart
 	helm install --name $(release_name) --namespace $(namespace) ./build/$(name)-$(version).tgz
 
-helm_upgrade: build_chart
+helm_upgrade: chart
 	helm upgrade $(release_name) ./build/$(name)-$(version).tgz
 
