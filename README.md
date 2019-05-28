@@ -1,5 +1,6 @@
 # rpm-mirrors
 
+[![GoDoc](https://godoc.org/github.com/wujie1993/rpm-mirrors?status.svg)](https://godoc.org/github.com/wujie1993/rpm-mirrors)
 [![CircleCI](https://circleci.com/gh/wujie1993/rpm-mirrors.svg?style=svg)](https://circleci.com/gh/wujie1993/rpm-mirrors)
 
 ## Requirements
