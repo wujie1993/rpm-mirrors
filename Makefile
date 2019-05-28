@@ -1,13 +1,13 @@
 org=gzsunrun
 name=rpm-mirrors
-version=0.1.0
-release=2
+version=0.1.1
+release=0
 
 # harbor 
-harbor_registry=192.168.1.100:5000
-harbor_repo=helm-sunrun-charts-100
-harbor_username=viva
-harbor_password=Q1w2e3r4t5
+harbor_registry=192.168.0.100:30002
+harbor_repo=helm-sunrun-charts
+harbor_username=admin
+harbor_password=Harbor12345
 
 # docker
 docker_registry=$(harbor_registry)
@@ -18,41 +18,42 @@ docker_registry_password=$(harbor_password)
 release_name=$(name)
 namespace=bu
 
-.PHONY: build_bin build_docker
+.PHONY: bin docker chart
 
-all: build_bin
+all: bin
 
 pre_build: 
 	mkdir -p ./build
 
-build_bin: pre_build
+bin: pre_build
 	go build -v -o ./build/$(name)
 
-install: build_bin
+install: bin
 	mkdir -p /etc/$(name)/
 	cp ./conf/$(name).conf /etc/$(name)/$(name).conf.example
 	cp ./build/$(name) /usr/local/bin/$(name) 
 
-build_image: build_bin
+image: bin
 	cp ./Dockerfile ./build/
 	cp ./conf/$(name).conf ./build/
 	docker build -t $(name):latest ./build/
 
-push_image: build_image
+push_image: image
 	docker login -u $(docker_registry_username) -p $(docker_registry_password) $(docker_registry)
 	docker tag $(name):latest $(docker_registry)/$(org)/$(name):$(version)-$(release)
 	docker push $(docker_registry)/$(org)/$(name):$(version)-$(release)
 
-build_chart:
+chart:
+	sed -i 's/^version: .*/version: $(version)/' ./chart/$(name)/Chart.yaml
 	sed -i 's/^image: $(org)\/$(name).*/image: $(org)\/$(name):$(version)-$(release)/' ./chart/$(name)/values.yaml
 	helm package -d ./build/ ./chart/$(name)
 
-push_chart: build_chart
+push_chart: chart
 	helm push -u $(harbor_username) -p $(harbor_password)  ./build/$(name)-$(version).tgz $(harbor_repo)
 
-helm_install: build_chart
+helm_install: chart
 	helm install --name $(release_name) --namespace $(namespace) ./build/$(name)-$(version).tgz
 
-helm_upgrade: build_chart
+helm_upgrade: chart
 	helm upgrade $(release_name) ./build/$(name)-$(version).tgz
 
