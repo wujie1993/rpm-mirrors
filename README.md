@@ -1,5 +1,7 @@
 # rpm-mirrors
 
+[![CircleCI](https://circleci.com/gh/wujie1993/rpm-mirrors.svg?style=svg)](https://circleci.com/gh/wujie1993/rpm-mirrors)
+
 ## Requirements
 
 Golang: 1.10
